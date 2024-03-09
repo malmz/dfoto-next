@@ -1,4 +1,4 @@
-import { handleCallback } from '@/lib/logto';
+import { handleCallback } from '@/lib/logto/actions';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 

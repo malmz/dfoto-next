@@ -6,15 +6,7 @@ import {
   signIn as signInAction,
   signOut as signOutAction,
 } from '@logto/next/server-actions';
-
-const logtoConfig = {
-  appId: process.env.LOGTO_APP_ID!,
-  appSecret: process.env.LOGTO_APP_SECRET!,
-  endpoint: process.env.LOGTO_AUTH_ENDPOINT!, // E.g. http://localhost:3001
-  baseUrl: process.env.BASE_ADDR!, // E.g. http://localhost:3000
-  cookieSecret: process.env.COOKIE_SECRET!,
-  cookieSecure: process.env.NODE_ENV === 'production',
-};
+import { logtoConfig } from './config';
 
 export const signIn = async () => await signInAction(logtoConfig);
 export const signOut = async () => await signOutAction(logtoConfig);

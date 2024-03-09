@@ -1,5 +1,10 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+import { db } from '../db';
+import { album } from '../schema';
+import { eq, sql } from 'drizzle-orm';
+
 const apiUrl = 'https://dfoto.se';
 
 export type ListResponse<T, F extends string = 'data'> = {
@@ -7,7 +12,7 @@ export type ListResponse<T, F extends string = 'data'> = {
 } & Record<F, T[]>;
 
 export interface Album {
-  _id: string;
+  id: string;
   name: string;
   description?: string;
   published: boolean;
@@ -30,7 +35,27 @@ export interface Image {
   exifData: unknown;
 }
 
-export async function getAlbums(
+export async function getAlbums(page: number, limit: number) {
+  const albums = await db
+    .select()
+    .from(album)
+    .limit(limit)
+    .offset(page * limit)
+    .where(eq(album.published, true));
+
+  const [{ total }] = await db
+    .select({ total: sql<number>`cast(count(${album.id}) as int)` })
+    .from(album)
+    .limit(limit)
+    .offset(page * limit);
+  return { albums, total };
+}
+
+export async function getAllAlbums() {
+  return await db.select().from(album);
+}
+
+/* export async function getAlbums(
   page: number,
   limit: number,
   status: 'published' | 'unpublished' | 'all',
@@ -46,15 +71,15 @@ export async function getAlbums(
     total: count,
     albums: albumsLimited,
   };
-}
+} */
 
-export async function getAllAlbums() {
+/* export async function getAllAlbums() {
   const res = await fetch(`${apiUrl}/v1/gallery`);
   if (!res.ok) {
     throw new Error('Failed to fetch albums');
   }
   return (await res.json()) as Album[];
-}
+} */
 
 export async function getAlbumInfo(id: string) {
   const res = await fetch(`${apiUrl}/v1/gallery/${id}`);
@@ -64,4 +89,17 @@ export async function getAlbumInfo(id: string) {
 export async function getAlbumImages(id: string) {
   const res = await fetch(`${apiUrl}/v1/image/${id}`);
   return (await res.json()) as Image[];
+}
+
+export async function setPubishedStatus(id: string, published: boolean) {
+  console.log('setPubishedStatus', id, published);
+
+  // TODO: Not ready yet
+  /* const res = await fetch(`${apiUrl}/v1/gallery/${id}/${published ? 'publish' : 'unpublish'}`, {
+    method: 'POST',
+  });
+  return (await res.json()) as Album; */
+
+  revalidatePath('/(main)');
+  revalidatePath('/(main)/page/[page]', 'page');
 }

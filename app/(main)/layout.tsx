@@ -2,7 +2,7 @@ import Debug from '@/components/debug';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { getAuth } from '@/lib/logto';
+import { getAuth } from '@/lib/logto/actions';
 import { getYear } from 'date-fns';
 import { Mail } from 'lucide-react';
 import Image from 'next/image';

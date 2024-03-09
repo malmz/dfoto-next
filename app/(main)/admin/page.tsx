@@ -1,7 +1,14 @@
+import { getAuth } from '@/lib/logto/actions';
 import { AlbumTable } from './album-table';
 import { getAllAlbums } from '@/lib/data/albums';
 
 export default async function Admin() {
+  const context = await getAuth({
+    getAccessToken: true,
+    resource: 'https://dfoto.se',
+  });
+  console.log('context', context);
+
   const albums = await getAllAlbums();
   return (
     <div className='container mt-8 flex flex-col gap-4'>
