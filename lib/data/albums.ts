@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { db } from '../db';
 import { album } from '../schema';
-import { eq, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 
 const apiUrl = 'https://dfoto.se';
 
@@ -41,7 +41,8 @@ export async function getAlbums(page: number, limit: number) {
     .from(album)
     .limit(limit)
     .offset(page * limit)
-    .where(eq(album.published, true));
+    .where(eq(album.published, true))
+    .orderBy(desc(album.taken_at));
 
   const [{ total }] = await db
     .select({ total: sql<number>`cast(count(${album.id}) as int)` })
@@ -52,7 +53,7 @@ export async function getAlbums(page: number, limit: number) {
 }
 
 export async function getAllAlbums() {
-  return await db.select().from(album);
+  return await db.select().from(album).orderBy(desc(album.taken_at));
 }
 
 /* export async function getAlbums(

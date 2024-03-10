@@ -33,5 +33,8 @@ export async function GET(
     .from(image)
     .where(eq(image.id, id));
 
-  return await fetch(`https://dfoto.se/v1/image/${legacy_id}/fullSize`);
+  const res = await fetch(`https://dfoto.se/v1/image/${legacy_id}/fullSize`, {
+    cache: 'no-store',
+  });
+  return new NextResponse(res.body);
 }

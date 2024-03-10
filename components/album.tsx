@@ -9,6 +9,8 @@ type Props = {
     id: number;
     name: string;
     created_at: Date;
+    legacy_id: string;
+    thumbnail_id: number | null;
   };
 };
 
@@ -17,9 +19,10 @@ export function Album({ album }: Props) {
     <Link key={album.id} href={`/album/${album.id}`} className='space-y-2'>
       <div className='overflow-hidden'>
         <Image
-          src={`https://dfoto.se/v1/gallery/${album.id}/thumbnail-preview`}
+          src={`/api/image/${album.thumbnail_id}`}
           width='300'
           height='200'
+          placeholder='empty'
           alt={album.name}
           className='aspect-[3/2] object-cover transition-transform hover:scale-105'
         ></Image>
