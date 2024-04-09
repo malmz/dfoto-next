@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import { image } from '@/lib/schema';
+import { LocalStorage } from '@/lib/storage/local';
 import { eq } from 'drizzle-orm';
 import { createReadStream } from 'fs';
 import { NextRequest, NextResponse } from 'next/server';
@@ -22,7 +23,7 @@ export async function GET(
   return new NextResponse(stream);
 } */
 
-export async function GET(
+/* export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
@@ -37,4 +38,16 @@ export async function GET(
     cache: 'no-store',
   });
   return new NextResponse(res.body);
+} */
+
+const storage = new LocalStorage(true);
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const id = Number(params.id);
+  if (Number.isNaN(id)) return NextResponse.error();
+  const stream = await storage.getImage(id);
+  return new NextResponse(stream);
 }

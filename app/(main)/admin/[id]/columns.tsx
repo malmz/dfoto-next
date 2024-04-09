@@ -12,19 +12,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Album } from '@/lib/schema';
-import { Column, ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { Album, Image } from '@/lib/schema';
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import {
-  ArrowUpDown,
-  Check,
-  Link as LinkIcon,
-  MoreHorizontal,
-  Trash2,
-} from 'lucide-react';
+import { Check, Link as LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
-const cb = createColumnHelper<Album>();
+type ItemType = Image;
+const cb = createColumnHelper<ItemType>();
 
 function RowActions() {
   return (
@@ -80,35 +75,12 @@ export const columns = [
     enableSorting: false,
     enableHiding: false,
   }),
-  cb.accessor('name', {
-    header: 'Namn',
+  cb.accessor('id', {
+    header: 'Id',
     cell: (info) => (
-      <Link
-        className='font-medium underline underline-offset-4'
-        href={`/admin/${info.row.original.id}`}
-      >
+      <Link className='font-medium underline underline-offset-4' href={''}>
         {info.getValue()}
       </Link>
-    ),
-  }),
-  cb.accessor('description', {
-    header: 'Beskrivning',
-  }),
-  cb.accessor('published', {
-    header: ({ column }) => <SortButton column={column}>Status</SortButton>,
-    cell: (info) =>
-      info.getValue() ? (
-        <Badge variant='secondary'>Published</Badge>
-      ) : (
-        <Badge variant='outline'>Draft</Badge>
-      ),
-  }),
-  cb.accessor('start_at', {
-    header: ({ column }) => <SortButton column={column}>Datum</SortButton>,
-    cell: (info) => (
-      <span className='text-nowrap'>
-        {format(info.getValue(), 'yyyy-MM-dd')}
-      </span>
     ),
   }),
   cb.display({
@@ -117,4 +89,4 @@ export const columns = [
     enableSorting: false,
     enableHiding: false,
   }),
-] satisfies ColumnDef<Album, any>[];
+] satisfies ColumnDef<ItemType, any>[];

@@ -3,15 +3,14 @@
 import { DataTable } from '@/components/data-table';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { columns } from './columns';
-import { Album } from '@/lib/schema';
-
-import { AlbumFormDialog } from './album-form-dialog';
+import { Image } from '@/lib/schema';
 
 type Props = {
-  data: Album[];
+  data: Image[];
 };
-export function AlbumTable({ data }: Props) {
+export function ImageTable({ data }: Props) {
   const [filter, setFilter] = useState('');
 
   return (
@@ -24,14 +23,16 @@ export function AlbumTable({ data }: Props) {
           onChange={(event) => setFilter(event.target.value)}
           className='max-w-sm'
         ></Input>
-        <AlbumFormDialog></AlbumFormDialog>
+        <Button variant='outline' size='sm'>
+          Skapa nytt album
+        </Button>
       </div>
       <DataTable
         filter={filter}
         onFilterChange={setFilter}
         columns={columns}
         data={data}
-        sortBy='start_at'
+        sortBy='taken_at'
         sortDesc={true}
       ></DataTable>
     </div>

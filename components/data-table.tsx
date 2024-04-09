@@ -1,5 +1,5 @@
-'use client';
 import {
+  Column,
   ColumnDef,
   FilterFn,
   SortingState,
@@ -21,6 +21,8 @@ import {
 } from './ui/table';
 import { useState } from 'react';
 import { DataTablePagination } from './table-pagination';
+import { Button } from './ui/button';
+import { ArrowUpDown } from 'lucide-react';
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -34,6 +36,24 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Return if the item should be filtered in/out
   return itemRank.passed;
 };
+
+export function SortButton<TData, TValue>({
+  column,
+  children,
+}: {
+  column: Column<TData, TValue>;
+  children: React.ReactNode;
+}) {
+  return (
+    <Button
+      className='-ml-4'
+      variant='ghost'
+      onClick={() => column.toggleSorting(column.getIsSorted() == 'asc')}
+    >
+      {children} <ArrowUpDown className='ml-2 h-4 w-4'></ArrowUpDown>
+    </Button>
+  );
+}
 
 type Props<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];

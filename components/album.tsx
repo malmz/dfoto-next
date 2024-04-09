@@ -2,14 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { formatRelative } from 'date-fns';
 import { sv } from 'date-fns/locale';
-import { Album } from '@/lib/data/albums';
 
 type Props = {
   album: {
     id: number;
     name: string;
     created_at: Date;
-    legacy_id: string;
+    legacy_id: string | null;
     thumbnail_id: number | null;
   };
 };
@@ -17,7 +16,7 @@ type Props = {
 export function Album({ album }: Props) {
   return (
     <Link key={album.id} href={`/album/${album.id}`} className='space-y-2'>
-      <div className='overflow-hidden'>
+      <div className='overflow-hidden rounded-lg'>
         <Image
           src={`/api/image/${album.thumbnail_id}`}
           width='300'

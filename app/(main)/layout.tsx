@@ -1,63 +1,67 @@
 import Debug from '@/components/debug';
+import { NavLink } from '@/components/nav-link';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { getAuth } from '@/lib/logto/actions';
 import { getYear } from 'date-fns';
-import { Mail } from 'lucide-react';
+import { Camera, CircleUser, Mail, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { UserProfile } from './user-profile';
+import { AdminLink } from './admin-link';
 
 async function Header() {
-  const { isAuthenticated, userInfo } = await getAuth({ fetchUserInfo: true });
   return (
-    <header className='flex h-16 items-center justify-between border-b px-4'>
-      <div className='flex items-center gap-6'>
-        <Image
-          src='/images/logo.png'
-          width='100'
-          height='40'
-          alt='DFoto logo'
-          priority
-        ></Image>
-        <nav className='flex items-center gap-6'>
-          <Link
-            href='/'
-            className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
-          >
-            Bilder
-          </Link>
-          <Link
-            href='/about'
-            className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
-          >
-            Om oss
-          </Link>
-          {isAuthenticated ? (
-            <Link
-              href='/admin'
-              className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary'
-            >
-              Admin
-            </Link>
-          ) : null}
-        </nav>
-      </div>
+    <header className='flex h-16 items-center justify-between gap-4 border-b px-4 md:px-6'>
+      <nav className='flex items-center gap-6'>
+        <Link href='/'>
+          <Camera className='h-6 w-6 text-primary'></Camera>
+          <span className='sr-only'>DFoto</span>
+
+          {/* <Image
+            src='/images/logo.png'
+            width='100'
+            height='40'
+            alt='DFoto logo'
+            priority
+          ></Image> */}
+        </Link>
+        <NavLink
+          href='/'
+          exact
+          className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary aria-[current=true]:text-foreground'
+        >
+          Bilder
+        </NavLink>
+        <NavLink
+          href='/about'
+          className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary aria-[current=true]:text-foreground'
+        >
+          Om oss
+        </NavLink>
+        <AdminLink></AdminLink>
+      </nav>
       <div className='flex items-center gap-2'>
-        <p>{userInfo?.name ?? userInfo?.username}</p>
         <form action='' className='flex items-center gap-2'>
-          <Input type='text' placeholder='Sök efter taggar'></Input>
-          <Button type='submit'>Sök</Button>
+          <Input type='search' placeholder='Sök...' className=''></Input>
         </form>
-        <ThemeSwitcher></ThemeSwitcher>
+        <UserProfile></UserProfile>
       </div>
     </header>
   );
 }
 
 async function Footer() {
-  const { isAuthenticated } = await getAuth();
   return (
     <footer className='mt-8 flex items-center justify-between gap-4 border-t p-4'>
       <aside className='flex items-center gap-2'>
@@ -75,20 +79,12 @@ async function Footer() {
         Vi ses genom kameralinsen!
       </p>
       <div className='flex items-center gap-2'>
+        <ThemeSwitcher></ThemeSwitcher>
         <Button variant='ghost' size='icon' asChild>
           <Link href='mailto:dfoto@dtek.se'>
             <Mail></Mail>
           </Link>
         </Button>
-        {!isAuthenticated ? (
-          <Button variant='ghost' asChild>
-            <Link href='/signin'>Sign In</Link>
-          </Button>
-        ) : (
-          <Button variant='ghost' asChild>
-            <Link href='/signout'>Sign out</Link>
-          </Button>
-        )}
       </div>
     </footer>
   );

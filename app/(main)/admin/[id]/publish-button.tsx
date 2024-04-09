@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 
 type Props = {
   album: {
-    _id: string;
+    id: number;
     published: boolean;
   };
 };
@@ -43,7 +43,7 @@ export function PublishButton({ album }: Props) {
           <AlertDialogCancel>Avbryt</AlertDialogCancel>
           <AlertDialogAction
             onClick={async () => {
-              await setPubishedStatus(album._id, !album.published);
+              await setPubishedStatus(album.id, !album.published);
               toast(
                 `Albumet har ${!album.published ? 'publicerats' : 'avpublicerats'}`,
               );

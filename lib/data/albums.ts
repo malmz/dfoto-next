@@ -2,23 +2,24 @@
 
 import { revalidatePath } from 'next/cache';
 import { db } from '../db';
-import { album } from '../schema';
-import { desc, eq, sql } from 'drizzle-orm';
+import { CreateAlbum, album, image } from '../schema';
+import { asc, desc, eq, sql } from 'drizzle-orm';
+import { cache } from 'react';
 
 const apiUrl = 'https://dfoto.se';
 
-export type ListResponse<T, F extends string = 'data'> = {
+/* export type ListResponse<T, F extends string = 'data'> = {
   total: number;
-} & Record<F, T[]>;
+} & Record<F, T[]>; */
 
-export interface Album {
+/* export interface Album {
   id: string;
   name: string;
   description?: string;
   published: boolean;
   shootDate: string;
   created_at: string;
-}
+} */
 
 export interface Image {
   _id: string;
@@ -35,25 +36,53 @@ export interface Image {
   exifData: unknown;
 }
 
-export async function getAlbums(page: number, limit: number) {
-  const albums = await db
-    .select()
-    .from(album)
-    .limit(limit)
-    .offset(page * limit)
-    .where(eq(album.published, true))
-    .orderBy(desc(album.taken_at));
+export const getAlbums = cache(async (page: number, limit: number) => {
+  const albums = await db.query.album.findMany({
+    orderBy: [desc(album.start_at)],
+    limit: limit,
+    offset: page * limit,
+    where: eq(album.published, true),
+  });
 
   const [{ total }] = await db
     .select({ total: sql<number>`cast(count(${album.id}) as int)` })
-    .from(album)
-    .limit(limit)
-    .offset(page * limit);
+    .from(album);
   return { albums, total };
-}
+});
+
+export const getPagesCount = cache(async (limit: number) => {
+  const [{ total }] = await db
+    .select({ total: sql<number>`cast(count(${album.id}) as int)` })
+    .from(album);
+  return Math.ceil(total / limit);
+});
 
 export async function getAllAlbums() {
-  return await db.select().from(album).orderBy(desc(album.taken_at));
+  return await db.query.album.findMany({
+    orderBy: [desc(album.start_at)],
+  });
+}
+
+export async function getAlbum(id: number) {
+  return await db.query.album.findFirst({
+    where: eq(album.id, id),
+    with: {
+      images: {
+        orderBy: [asc(image.taken_at)],
+      },
+    },
+  });
+}
+
+export async function getAlbumInfo(id: number) {
+  return await db.query.album.findFirst({
+    where: eq(album.id, id),
+  });
+}
+
+export async function createAlbum(data: CreateAlbum) {
+  await db.insert(album).values(data);
+  revalidatePath('/');
 }
 
 /* export async function getAlbums(
@@ -82,17 +111,17 @@ export async function getAllAlbums() {
   return (await res.json()) as Album[];
 } */
 
-export async function getAlbumInfo(id: string) {
+/* export async function getAlbumInfo(id: string) {
   const res = await fetch(`${apiUrl}/v1/gallery/${id}`);
-  return (await res.json()) as Album;
-}
+  return await res.json();
+} */
 
 export async function getAlbumImages(id: string) {
   const res = await fetch(`${apiUrl}/v1/image/${id}`);
   return (await res.json()) as Image[];
 }
 
-export async function setPubishedStatus(id: string, published: boolean) {
+export async function setPubishedStatus(id: number, published: boolean) {
   console.log('setPubishedStatus', id, published);
 
   // TODO: Not ready yet

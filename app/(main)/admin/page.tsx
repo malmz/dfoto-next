@@ -1,4 +1,4 @@
-import { getAuth } from '@/lib/logto/actions';
+import { ensureRole, getAuth } from '@/lib/logto/actions';
 import { AlbumTable } from './album-table';
 import { getAllAlbums } from '@/lib/data/albums';
 
@@ -7,7 +7,8 @@ export default async function Admin() {
     getAccessToken: true,
     resource: 'https://dfoto.se',
   });
-  console.log('context', context);
+
+  ensureRole(context, 'read:album');
 
   const albums = await getAllAlbums();
   return (

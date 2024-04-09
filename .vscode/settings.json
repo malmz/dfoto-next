@@ -2,5 +2,11 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.editor.customLabels.patterns": {
+    "app/**/page.tsx": "${dirname}.tsx",
+    "app/**/layout.tsx": "${dirname}.layout.tsx",
+    "components/ui/*.tsx": "ui/${filename}.tsx",
+    "components/*.tsx": "comp/${filename}.tsx"
+  }
 }
