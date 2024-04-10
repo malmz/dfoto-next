@@ -3,8 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { db } from '../db';
 import { CreateAlbum, album, image } from '../schema';
-import { asc, desc, eq, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
 import { cache } from 'react';
+import { ensureRole } from '../logto/actions';
 
 const apiUrl = 'https://dfoto.se';
 
@@ -122,14 +123,32 @@ export async function getAlbumImages(id: string) {
 }
 
 export async function setPubishedStatus(id: number, published: boolean) {
-  console.log('setPubishedStatus', id, published);
+  ensureRole(['publish:album']);
 
-  // TODO: Not ready yet
-  /* const res = await fetch(`${apiUrl}/v1/gallery/${id}/${published ? 'publish' : 'unpublish'}`, {
-    method: 'POST',
-  });
-  return (await res.json()) as Album; */
+  if (published) {
+    const [{ total }] = await db
+      .select({ total: sql<number>`cast(count(${image.id}) as int)` })
+      .from(image)
+      .where(eq(image.album_id, id));
 
-  revalidatePath('/(main)');
-  revalidatePath('/(main)/page/[page]', 'page');
+    if (total === 0) {
+      throw new Error('Cannot publish an album without images');
+    }
+
+    // Ensure that the album has a thumbnail
+    const [{ id: firstImageId }] = await db
+      .select({ id: image.id })
+      .from(image)
+      .where(eq(image.album_id, id))
+      .orderBy(asc(image.taken_at))
+      .limit(1);
+
+    await db
+      .update(album)
+      .set({ thumbnail_id: firstImageId })
+      .where(and(eq(album.id, id), isNull(album.thumbnail_id)));
+  }
+
+  await db.update(album).set({ published }).where(eq(album.id, id));
+  revalidatePath('/');
 }

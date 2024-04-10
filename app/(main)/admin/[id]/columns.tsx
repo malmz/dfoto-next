@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Album, Image } from '@/lib/schema';
+import { Image } from '@/lib/schema';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Check, Link as LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
@@ -81,6 +81,14 @@ export const columns = [
       <Link className='font-medium underline underline-offset-4' href={''}>
         {info.getValue()}
       </Link>
+    ),
+  }),
+  cb.accessor('taken_at', {
+    header: 'Tagen vid',
+    cell: (info) => (
+      <span className='text-nowrap'>
+        {format(info.getValue(), 'yyyy-MM-dd')}
+      </span>
     ),
   }),
   cb.display({

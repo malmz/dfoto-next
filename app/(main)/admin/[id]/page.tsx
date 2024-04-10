@@ -5,21 +5,10 @@ import { getAlbum } from '@/lib/data/albums';
 import { PublishButton } from './publish-button';
 import { Textarea } from '@/components/ui/textarea';
 import { DateInput } from './date-input';
-import { AutoGrid } from '@/components/autogrid';
-import Link from 'next/link';
-import Image from 'next/image';
-import { cn } from '@/lib/utils';
-import { UploadButtom } from './upload-buttom';
+import { UploadButton } from './upload-button';
 import { Separator } from '@/components/ui/separator';
 import { ImageTable } from './image-table';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Form } from '@/components/ui/form';
+import Debug from '@/components/debug';
 
 export default async function Admin({ params }: { params: { id: string } }) {
   const album = await getAlbum(Number(params.id));
@@ -71,11 +60,9 @@ export default async function Admin({ params }: { params: { id: string } }) {
       </div>
       <Separator className='mx-auto mt-12 max-w-prose'></Separator>
       <div className='container mt-8 flex flex-col gap-4'>
-        <div className='flex justify-between gap-4'>
-          <h2 className='text-3xl font-extrabold tracking-tight'>Bilder</h2>
-          <UploadButtom>Lägg till</UploadButtom>
-        </div>
-        <ImageTable data={album.images}></ImageTable>
+        <h2 className='text-3xl font-extrabold tracking-tight'>Bilder</h2>
+
+        <ImageTable albumId={album.id} data={album.images}></ImageTable>
       </div>
     </>
   );

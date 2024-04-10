@@ -3,13 +3,14 @@ import { db } from '../db';
 import { image } from '../schema';
 import { Readable, Writable } from 'stream';
 import { createReadStream, createWriteStream } from 'fs';
-import { stat, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { stat, mkdir, copyFile, rename } from 'fs/promises';
+import { join, extname } from 'path';
 import { extension } from 'mime-types';
 import { ImageStorage } from '.';
 import { LegacyStorage } from './legacy';
 
 const storagePath = process.env.STORAGE_PATH ?? './image-store';
+const uploadsPath = process.env.UPLOADS_PATH ?? './uploads';
 
 function createReadWebStream(...args: Parameters<typeof createReadStream>) {
   // Släng dig i väggen node streams
@@ -57,5 +58,30 @@ export class LocalStorage implements ImageStorage {
       }
     }
     return createReadWebStream(path);
+  }
+
+  async stageUpload(file: File): Promise<string> {
+    const id = crypto.randomUUID();
+    const filename = `${id}.${extension(file.type) ?? ''}`;
+    const path = join(uploadsPath, filename);
+    await mkdir(uploadsPath, { recursive: true });
+    const writeStream = createWriteWebStream(path);
+    await file.stream().pipeTo(writeStream);
+    return path;
+  }
+
+  async commitUpload(
+    tempfile: string,
+    albumId: number,
+    imageId: number,
+    mimetype?: string | null,
+  ) {
+    const ext = mimetype
+      ? extension(mimetype) || extname(tempfile)
+      : extname(tempfile);
+    const newFilename = `${imageId}.${ext}`;
+    const dest = join(storagePath, albumId.toString(), newFilename);
+    await mkdir(join(storagePath, albumId.toString()), { recursive: true });
+    await rename(tempfile, dest);
   }
 }

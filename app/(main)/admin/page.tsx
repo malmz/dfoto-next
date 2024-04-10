@@ -8,7 +8,10 @@ export default async function Admin() {
     resource: 'https://dfoto.se',
   });
 
-  ensureRole(context, 'read:album');
+  ensureRole(['read:album'], {
+    getAccessToken: true,
+    resource: 'https://dfoto.se',
+  });
 
   const albums = await getAllAlbums();
   return (
