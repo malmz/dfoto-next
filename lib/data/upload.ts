@@ -47,10 +47,8 @@ export async function upload(formData: FormData) {
       const file = data.file[i];
       const metadata = await sharp(tempfile).metadata();
       const exif_data = metadata.exif ? exif(metadata.exif) : null;
-      const taken_at_string = exif_data?.Image?.DateTimeOriginal;
-      const taken_at = taken_at_string
-        ? new Date(taken_at_string)
-        : new Date(file.lastModified);
+      const taken_at =
+        exif_data?.Image?.DateTime ?? new Date(file.lastModified) ?? new Date();
 
       return {
         album_id: data.album,

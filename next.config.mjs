@@ -7,6 +7,10 @@ const withBundleAnalyzer = NextBundleAnalyzer({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  webpack: (config, ctx) => {
+    config.experiments = { ...config.experiments, topLevelAwait: true };
+    return config;
+  },
   images: {
     remotePatterns: [
       {

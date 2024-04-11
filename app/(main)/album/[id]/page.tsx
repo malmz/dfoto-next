@@ -2,12 +2,14 @@ import { AutoGrid } from '@/components/autogrid';
 import { getAlbum } from '@/lib/data/albums';
 import Image from 'next/image';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const album = await getAlbum(Number(params.id));
 
   if (!album) {
-    return <div>Album not found</div>;
+    notFound();
+    //return <NotFound>Här vart de inga bilder</NotFound>;
   }
 
   return (

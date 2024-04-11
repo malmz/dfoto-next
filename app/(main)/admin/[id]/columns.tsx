@@ -12,13 +12,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Image } from '@/lib/schema';
+import { Album, Image as ImageType } from '@/lib/schema';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Check, Link as LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
+import { extension } from 'mime-types';
+import Image from 'next/image';
+
 import Link from 'next/link';
 
-type ItemType = Image;
+type ItemType = ImageType & { thumbnail: boolean };
 const cb = createColumnHelper<ItemType>();
 
 function RowActions() {
@@ -33,9 +36,9 @@ function RowActions() {
       <DropdownMenuContent align='end'>
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator></DropdownMenuSeparator>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={async () => {}}>
           <Check className='mr-2 h-4 w-4'></Check>
-          <span>Publicera</span>
+          <span>Sätt som omslag</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <LinkIcon className='mr-2 h-4 w-4'></LinkIcon>
@@ -50,51 +53,79 @@ function RowActions() {
   );
 }
 
-export const columns = [
-  cb.display({
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label='Select all'
-        className='translate-y-[2px]'
-      ></Checkbox>
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label='Select row'
-        className='translate-y-[2px]'
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  }),
-  cb.accessor('id', {
-    header: 'Id',
-    cell: (info) => (
-      <Link className='font-medium underline underline-offset-4' href={''}>
-        {info.getValue()}
-      </Link>
-    ),
-  }),
-  cb.accessor('taken_at', {
-    header: 'Tagen vid',
-    cell: (info) => (
-      <span className='text-nowrap'>
-        {format(info.getValue(), 'yyyy-MM-dd')}
-      </span>
-    ),
-  }),
-  cb.display({
-    id: 'actions',
-    cell: (info) => <RowActions></RowActions>,
-    enableSorting: false,
-    enableHiding: false,
-  }),
-] satisfies ColumnDef<ItemType, any>[];
+export function createColumns() {
+  return [
+    cb.display({
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label='Select all'
+          className='translate-y-[2px]'
+        ></Checkbox>
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label='Select row'
+          className='translate-y-[2px]'
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    }),
+
+    cb.accessor('id', {
+      header: (info) => <SortButton column={info.column}>ID</SortButton>,
+      cell: (info) => <Link href={''}>{info.getValue()}</Link>,
+    }),
+
+    cb.accessor('id', {
+      header: 'Picture',
+      cell: (info) => (
+        <Link href={''}>
+          <Image
+            src={`/api/image/${info.getValue()}`}
+            width='150'
+            height='100'
+            alt=''
+            className='aspect-[3/2] object-cover'
+          ></Image>
+        </Link>
+      ),
+      enableSorting: false,
+    }),
+
+    cb.accessor('mimetype', {
+      header: (info) => <SortButton column={info.column}>Filtyp</SortButton>,
+      cell: (info) => extension(info.getValue()),
+    }),
+    cb.accessor('taken_at', {
+      header: (info) => <SortButton column={info.column}>Tagen vid</SortButton>,
+      cell: (info) => (
+        <span className='text-nowrap'>
+          {format(info.getValue(), 'yyyy-MM-dd')}
+        </span>
+      ),
+    }),
+    cb.accessor('taken_by_name', {
+      header: (info) => <SortButton column={info.column}>Fotograf</SortButton>,
+    }),
+    cb.accessor('thumbnail', {
+      header: 'Omslag',
+      cell: (info) =>
+        info.getValue() ? <Check className='h-6 w-6'></Check> : null,
+    }),
+    cb.display({
+      id: 'actions',
+      cell: (info) => <RowActions></RowActions>,
+      enableSorting: false,
+      enableHiding: false,
+    }),
+  ] satisfies ColumnDef<ItemType, any>[];
+}

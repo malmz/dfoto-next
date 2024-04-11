@@ -59,7 +59,7 @@ export function AlbumFormDialog() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     try {
-      //await createAlbum(values);
+      await createAlbum(values);
       setOpen(false);
       form.reset();
       toast(`Skapade album ${values.name}`);

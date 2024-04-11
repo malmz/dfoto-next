@@ -1,24 +1,19 @@
-import Debug from '@/components/debug';
 import { NavLink } from '@/components/nav-link';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { getAuth } from '@/lib/logto/actions';
 import { getYear } from 'date-fns';
-import { Camera, CircleUser, Mail, Search } from 'lucide-react';
+import { Camera, Mail } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { UserProfile } from './user-profile';
-import { AdminLink } from './admin-link';
+import { Timestamp } from '@/components/timestamp';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 async function Header() {
   return (
@@ -41,7 +36,7 @@ async function Header() {
           exact
           className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary aria-[current=true]:text-foreground'
         >
-          Bilder
+          Album
         </NavLink>
         <NavLink
           href='/about'
@@ -49,7 +44,6 @@ async function Header() {
         >
           Om oss
         </NavLink>
-        <AdminLink></AdminLink>
       </nav>
       <div className='flex items-center gap-2'>
         <form action='' className='flex items-center gap-2'>
@@ -78,13 +72,21 @@ async function Footer() {
       <p className='text-lg font-medium text-muted-foreground'>
         Vi ses genom kameralinsen!
       </p>
+      <Timestamp></Timestamp>
       <div className='flex items-center gap-2'>
         <ThemeSwitcher></ThemeSwitcher>
-        <Button variant='ghost' size='icon' asChild>
-          <Link href='mailto:dfoto@dtek.se'>
-            <Mail></Mail>
-          </Link>
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost' size='icon' asChild>
+              <Link href='mailto:dfoto@dtek.se'>
+                <Mail></Mail>
+              </Link>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Maila oss</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </footer>
   );
@@ -98,7 +100,7 @@ export default async function Layout({
   return (
     <>
       <Header></Header>
-      <main className='grow'>{children}</main>
+      <main className='flex grow flex-col'>{children}</main>
       <Footer></Footer>
     </>
   );

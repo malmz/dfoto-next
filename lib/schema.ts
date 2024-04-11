@@ -9,6 +9,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
+import { Exif } from 'exif-reader';
 
 export const album = pgTable('album', {
   id: serial('id').primaryKey(),
@@ -39,7 +40,7 @@ export type CreateAlbum = Omit<
 export const image = pgTable('image', {
   id: serial('id').primaryKey(),
   legacy_id: text('legacy_id').unique(),
-  exif_data: jsonb('exif_data'),
+  exif_data: jsonb('exif_data').$type<Exif>(),
   mimetype: text('mimetype'),
   album_id: integer('album_id')
     .references(() => album.id)

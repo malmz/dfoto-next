@@ -6,6 +6,7 @@
   "workbench.editor.customLabels.patterns": {
     "app/**/page.tsx": "${dirname}.tsx",
     "app/**/layout.tsx": "${dirname}.layout.tsx",
+    "app/**/loading.tsx": "${dirname}.loading.tsx",
     "components/ui/*.tsx": "ui/${filename}.tsx",
     "components/*.tsx": "comp/${filename}.tsx"
   }

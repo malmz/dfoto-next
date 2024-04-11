@@ -1,5 +1,14 @@
 import LogtoClient from '@logto/next/server-actions';
 
+const scopes = [
+  'write:album',
+  'read:album',
+  'delete:album',
+  'publish:album',
+  'write:image',
+  'delete:image',
+] as const;
+
 export const logtoConfig = {
   appId: process.env.LOGTO_APP_ID!,
   appSecret: process.env.LOGTO_APP_SECRET!,
@@ -8,14 +17,9 @@ export const logtoConfig = {
   cookieSecret: process.env.COOKIE_SECRET!,
   cookieSecure: process.env.NODE_ENV === 'production',
   resources: ['https://dfoto.se'],
-  scopes: [
-    'write:album',
-    'read:album',
-    'delete:album',
-    'publish:album',
-    'write:image',
-    'delete:image',
-  ],
+  scopes: scopes as unknown as string[],
 } satisfies ConstructorParameters<typeof LogtoClient>[0];
+
+export type Role = (typeof scopes)[number];
 
 const logtoClient = new LogtoClient(logtoConfig);

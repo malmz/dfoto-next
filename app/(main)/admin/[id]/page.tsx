@@ -8,12 +8,12 @@ import { DateInput } from './date-input';
 import { UploadButton } from './upload-button';
 import { Separator } from '@/components/ui/separator';
 import { ImageTable } from './image-table';
-import Debug from '@/components/debug';
+import { NotFound } from '@/components/not-found';
 
 export default async function Admin({ params }: { params: { id: string } }) {
   const album = await getAlbum(Number(params.id));
   if (!album) {
-    throw new Error('Album not found');
+    return <NotFound>De va inget album här :/</NotFound>;
   }
   return (
     <>
@@ -62,7 +62,11 @@ export default async function Admin({ params }: { params: { id: string } }) {
       <div className='container mt-8 flex flex-col gap-4'>
         <h2 className='text-3xl font-extrabold tracking-tight'>Bilder</h2>
 
-        <ImageTable albumId={album.id} data={album.images}></ImageTable>
+        <ImageTable
+          albumId={album.id}
+          thumbnailId={album.thumbnail_id}
+          data={album.images}
+        ></ImageTable>
       </div>
     </>
   );

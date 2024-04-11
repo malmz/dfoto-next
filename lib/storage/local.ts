@@ -8,6 +8,7 @@ import { join, extname } from 'path';
 import { extension } from 'mime-types';
 import { ImageStorage } from '.';
 import { LegacyStorage } from './legacy';
+import { getImage } from '../data/albums';
 
 const storagePath = process.env.STORAGE_PATH ?? './image-store';
 const uploadsPath = process.env.UPLOADS_PATH ?? './uploads';
@@ -39,7 +40,8 @@ export class LocalStorage implements ImageStorage {
   constructor(private fallback = true) {}
 
   async getImage(id: number) {
-    const data = await db.query.image.findFirst({ where: eq(image.id, id) });
+    const data = await getImage(id);
+
     if (!data) return null;
     const filename = `${data.id}.${extension(data.mimetype ?? '') ?? ''}`;
     const path = join(storagePath, data.album_id.toString(), filename);

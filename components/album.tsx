@@ -23,7 +23,7 @@ export function Album({ album }: Props) {
           height='200'
           placeholder='empty'
           alt={album.name}
-          className='aspect-[3/2] object-cover transition-transform hover:scale-105'
+          className='aspect-[3/2] h-[200px] w-[300px] object-cover transition-transform hover:scale-105'
         ></Image>
       </div>
       <div className='flex flex-wrap justify-between px-2 text-sm'>

@@ -44,11 +44,13 @@ export function Paginator({ page, totalPages, ...props }: Props) {
             </PaginationLink>
           </PaginationItem>
         ) : null}
-        <PaginationItem>
-          <PaginationLink href={`/page/${middle}`} isActive={page === middle}>
-            {middle}
-          </PaginationLink>
-        </PaginationItem>
+        {totalPages > 2 ? (
+          <PaginationItem>
+            <PaginationLink href={`/page/${middle}`} isActive={page === middle}>
+              {middle}
+            </PaginationLink>
+          </PaginationItem>
+        ) : null}
         {page >= 3 ? (
           <PaginationItem>
             <PaginationLink href={`/page/${right}`} isActive={page === right}>
@@ -61,14 +63,16 @@ export function Paginator({ page, totalPages, ...props }: Props) {
             <PaginationEllipsis />
           </PaginationItem>
         ) : null}
-        <PaginationItem>
-          <PaginationLink
-            href={`/page/${totalPages}`}
-            isActive={page === totalPages}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>
+        {totalPages > 1 ? (
+          <PaginationItem>
+            <PaginationLink
+              href={`/page/${totalPages}`}
+              isActive={page === totalPages}
+            >
+              {totalPages}
+            </PaginationLink>
+          </PaginationItem>
+        ) : null}
         {page < totalPages ? (
           <PaginationItem>
             <PaginationNext href={`/page/${page + 1}`}></PaginationNext>

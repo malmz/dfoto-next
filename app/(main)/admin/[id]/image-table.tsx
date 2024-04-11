@@ -3,17 +3,21 @@
 import { DataTable } from '@/components/data-table';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import { columns } from './columns';
+import { createColumns } from './columns';
 import { Image } from '@/lib/schema';
 import { UploadButton } from './upload-button';
-import Debug from '@/components/debug';
 
 type Props = {
   albumId: number;
+  thumbnailId: number | null;
   data: Image[];
 };
-export function ImageTable({ albumId, data }: Props) {
+export function ImageTable({ albumId, thumbnailId, data }: Props) {
   const [filter, setFilter] = useState('');
+  const mappedData = data.map((image) => ({
+    ...image,
+    thumbnail: image.id === thumbnailId,
+  }));
 
   return (
     <div>
@@ -32,9 +36,8 @@ export function ImageTable({ albumId, data }: Props) {
       <DataTable
         filter={filter}
         onFilterChange={setFilter}
-        columns={columns}
-        data={data}
-        sortBy='taken_at'
+        columns={createColumns()}
+        data={mappedData}
         sortDesc={true}
       ></DataTable>
     </div>

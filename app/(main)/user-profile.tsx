@@ -9,14 +9,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useUser } from '@/lib/data/client';
-import { LogtoContext } from '@logto/next/server-actions';
+import { Skeleton } from '@/components/ui/skeleton';
+import { hasRole, useUser } from '@/lib/data/client';
 import { CircleUser } from 'lucide-react';
 import Link from 'next/link';
-import useSWR from 'swr';
 
 export function UserProfile() {
-  const { data } = useUser();
+  const { data, isLoading } = useUser();
+  const isAdmin = hasRole(data, ['read:album']);
+
+  if (isLoading) {
+    return <Skeleton className='h-10 w-10 rounded-full'></Skeleton>;
+  }
 
   return (
     <>
@@ -43,10 +47,14 @@ export function UserProfile() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              {data.userInfo?.name ?? data.userInfo?.username ?? 'Användare'}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href='/admin'>Admin</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <a href='/signout'>Sign out</a>

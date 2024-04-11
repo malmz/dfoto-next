@@ -19,9 +19,14 @@ export function UploadButton({ children, albumId, ...props }: Props) {
   return (
     <form
       action={async (formData) => {
-        await upload(formData);
+        try {
+          await upload(formData);
+          toast('Bilder uppladdade');
+        } catch (error) {
+          console.error(error);
+          toast.error('De där va inge bra bild...');
+        }
         inputRef.current!.files = null;
-        toast('Bilder uppladdade');
       }}
     >
       <Button asChild {...props} disabled={pending}>
