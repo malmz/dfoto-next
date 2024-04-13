@@ -3,7 +3,7 @@ import { Paginator } from '@/components/paginator';
 import { getPagesCount } from '@/lib/data/albums';
 import { Albums } from './albums';
 
-export const dynamic = 'force-dynamic';
+//export const dynamic = 'force-dynamic';
 
 const limit = 28;
 

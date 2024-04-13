@@ -14,6 +14,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import dataLogo from '@/assets/images/datalogo.svg';
 
 async function Header() {
   return (
@@ -60,7 +61,7 @@ async function Footer() {
     <footer className='mt-8 flex items-center justify-between gap-4 border-t p-4'>
       <aside className='flex items-center gap-2'>
         <Image
-          src='/images/datalogo.svg'
+          src={dataLogo}
           alt='Computer science logo'
           height={36}
           width={36}
