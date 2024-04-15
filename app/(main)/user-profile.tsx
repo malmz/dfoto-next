@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,20 +9,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { hasRole, useUser } from '@/lib/data/client';
+import { checkRole } from '@/lib/logto/actions';
 import { CircleUser } from 'lucide-react';
 import Link from 'next/link';
 
-export function UserProfile() {
-  const { data, isLoading } = useUser();
-  const isAdmin = hasRole(data, ['read:album']);
+export async function UserProfile() {
+  const { isAuthenticated, userInfo, passed } = await checkRole(['read:album']);
 
-  if (isLoading) {
+  /* if (isLoading) {
     return <Skeleton className='h-10 w-10 rounded-full'></Skeleton>;
-  }
+  } */
 
   return (
     <>
-      {data?.isAuthenticated ? (
+      {isAuthenticated ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -32,10 +30,10 @@ export function UserProfile() {
               size='icon'
               className='overflow-hidden rounded-full'
             >
-              {data.userInfo?.picture ? (
+              {userInfo?.picture ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={data.userInfo?.picture}
+                  src={userInfo?.picture}
                   alt='user'
                   width='40'
                   height='40'
@@ -48,13 +46,15 @@ export function UserProfile() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>
-              {data.userInfo?.name ?? data.userInfo?.username ?? 'Användare'}
+              {userInfo?.name ?? userInfo?.username ?? 'Användare'}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href='/admin'>Admin</Link>
-            </DropdownMenuItem>
+            {passed && (
+              <DropdownMenuItem asChild>
+                <Link href='/admin'>Admin</Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <a href='/signout'>Sign out</a>
