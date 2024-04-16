@@ -109,5 +109,5 @@ export async function upload(formData: FormData) {
     );
   });
 
-  revalidatePath('/');
+  revalidatePath(`/admin/${data.album}`);
 }
