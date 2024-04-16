@@ -32,7 +32,6 @@ export async function GET(
   return new NextResponse(stream, {
     headers: {
       'Content-Type': image.mimetype ?? '',
-      'Cache-Control': 'public, max-age=31536000, immutable',
     },
   });
 }
