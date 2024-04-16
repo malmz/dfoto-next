@@ -14,10 +14,11 @@ interface Props extends ButtonProps {
 export function UploadButton({ children, albumId, ...props }: Props) {
   const id = useId();
   const { pending } = useFormStatus();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <form
+      ref={formRef}
       action={async (formData) => {
         try {
           await upload(formData);
@@ -26,7 +27,7 @@ export function UploadButton({ children, albumId, ...props }: Props) {
           console.error(error);
           toast.error('De där va inge bra bild...');
         }
-        inputRef.current!.files = null;
+        formRef.current?.reset();
       }}
     >
       <Button asChild {...props} disabled={pending}>
@@ -38,7 +39,6 @@ export function UploadButton({ children, albumId, ...props }: Props) {
         </label>
       </Button>
       <input
-        ref={inputRef}
         onChange={(event) => {
           const files = event.target.files;
           if (!files) {
