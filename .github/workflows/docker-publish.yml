@@ -2,7 +2,7 @@ name: Docker
 
 on:
   push:
-    tags: ["v*.*.*"]
+    tags: ['v*.*.*']
 
 env:
   REGISTRY: ghcr.io
@@ -38,6 +38,8 @@ jobs:
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v5
+        env:
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
         with:
           context: .
           push: true
