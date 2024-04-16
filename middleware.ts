@@ -1,21 +1,17 @@
-import { getAuth } from '@/lib/logto/middleware';
-import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@/lib/auth';
+import { NextResponse } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  const { isAuthenticated, scopes } = await getAuth(request, {
-    getAccessToken: true,
-    resource: 'https://dfoto.se',
-  });
-  if (isAuthenticated && scopes?.includes('read:album')) {
-    return NextResponse.next();
+const protectedPaths = /\/admin(.*)/;
+
+export default auth((req) => {
+  const auth = req.auth;
+  if (req.nextUrl.pathname.startsWith('/admin') && auth?.user == null) {
+    return NextResponse.redirect(
+      new URL(`/api/auth/signin?redirect=${req.nextUrl.pathname}`, req.url),
+    );
   }
-
-  const returnTo = request.nextUrl.pathname;
-  return NextResponse.redirect(
-    new URL(`/signin?returnTo=${returnTo}`, request.url),
-  );
-}
+});
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

@@ -1,8 +1,8 @@
 'use client';
 import { Button, ButtonProps } from '@/components/ui/button';
-import { upload } from '@/lib/data/upload';
+import { upload } from '@/lib/actions';
 import { Loader2 } from 'lucide-react';
-import { useEffect, useId, useRef } from 'react';
+import { useId, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import { toast } from 'sonner';
 

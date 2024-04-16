@@ -1,5 +1,5 @@
 import { AutoGrid } from '@/components/autogrid';
-import { getAlbum } from '@/lib/data/albums';
+import { getAlbum } from '@/server/data';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';

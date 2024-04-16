@@ -1,6 +1,6 @@
 import Debug from '@/components/debug';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getImage } from '@/lib/data/albums';
+import { getImage } from '@/server/data';
 import { format } from 'date-fns';
 import { sv } from 'date-fns/locale';
 import Image from 'next/image';

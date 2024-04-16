@@ -7,22 +7,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
-import { hasRole, useUser } from '@/lib/data/client';
-import { checkRole } from '@/lib/logto/actions';
+import { auth, signIn, signOut } from '@/lib/auth';
 import { CircleUser } from 'lucide-react';
 import Link from 'next/link';
 
 export async function UserProfile() {
-  const { isAuthenticated, userInfo, passed } = await checkRole(['read:album']);
-
-  /* if (isLoading) {
-    return <Skeleton className='h-10 w-10 rounded-full'></Skeleton>;
-  } */
+  const session = await auth();
+  //const { isAuthenticated, userInfo, passed } = await checkRole(['read:album']);
 
   return (
     <>
-      {isAuthenticated ? (
+      {session?.user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -30,10 +25,10 @@ export async function UserProfile() {
               size='icon'
               className='overflow-hidden rounded-full'
             >
-              {userInfo?.picture ? (
+              {session.user.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={userInfo?.picture}
+                  src={session.user.image}
                   alt='user'
                   width='40'
                   height='40'
@@ -46,25 +41,39 @@ export async function UserProfile() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
             <DropdownMenuLabel>
-              {userInfo?.name ?? userInfo?.username ?? 'Användare'}
+              {session.user.name ?? session.user.email ?? 'Användare'}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            {passed && (
+            {true && (
               <DropdownMenuItem asChild>
                 <Link href='/admin'>Admin</Link>
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <a href='/signout'>Sign out</a>
+            <DropdownMenuItem asChild>
+              <form
+                action={async () => {
+                  'use server';
+                  await signOut();
+                }}
+              >
+                <button type='submit'>Sign out</button>
+              </form>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <Button variant='outline' asChild>
-          <a href='/signin'>Sign In</a>
-        </Button>
+        <form
+          action={async () => {
+            'use server';
+            await signIn('github');
+          }}
+        >
+          <Button variant='outline' type='submit'>
+            Sign in
+          </Button>
+        </form>
       )}
     </>
   );

@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { setPubishedStatus } from '@/lib/data/albums';
+import { setPubishedStatus } from '@/lib/actions';
 import { toast } from 'sonner';
 
 type Props = {

@@ -4,7 +4,7 @@ import { DataTable } from '@/components/data-table';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { createColumns } from './columns';
-import { Image } from '@/lib/schema';
+import { Image } from '@/server/schema';
 import { UploadButton } from './upload-button';
 
 type Props = {

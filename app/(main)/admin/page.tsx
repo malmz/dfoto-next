@@ -1,9 +1,8 @@
-import { ensureRole, getAuth } from '@/lib/logto/actions';
 import { AlbumTable } from './album-table';
-import { getAllAlbums } from '@/lib/data/albums';
+import { getAllAlbums } from '@/server/data';
 
 export default async function Admin() {
-  ensureRole(['read:album']);
+  //ensureRole(['read:album']);
 
   const albums = await getAllAlbums();
   return (

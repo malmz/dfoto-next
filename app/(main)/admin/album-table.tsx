@@ -4,7 +4,7 @@ import { DataTable } from '@/components/data-table';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { columns } from './columns';
-import { Album } from '@/lib/schema';
+import type { Album } from '@/server/schema';
 
 import { AlbumFormDialog } from './album-form-dialog';
 

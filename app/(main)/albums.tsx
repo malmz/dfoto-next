@@ -1,5 +1,5 @@
 import { Album } from '@/components/album';
-import { getAlbums } from '@/lib/data/albums';
+import { getAlbums } from '@/server/data';
 
 const limit = 28;
 

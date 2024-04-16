@@ -12,16 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Album } from '@/lib/schema';
-import { Column, ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import type { Album } from '@/server/schema';
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
-import {
-  ArrowUpDown,
-  Check,
-  Link as LinkIcon,
-  MoreHorizontal,
-  Trash2,
-} from 'lucide-react';
+import { Check, Link as LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
 const cb = createColumnHelper<Album>();

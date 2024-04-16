@@ -1,11 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getAlbum } from '@/lib/data/albums';
+import { getAlbum } from '@/server/data';
 import { PublishButton } from './publish-button';
 import { Textarea } from '@/components/ui/textarea';
 import { DateInput } from './date-input';
-import { UploadButton } from './upload-button';
 import { Separator } from '@/components/ui/separator';
 import { ImageTable } from './image-table';
 import { NotFound } from '@/components/not-found';
@@ -13,7 +12,7 @@ import { NotFound } from '@/components/not-found';
 export default async function Admin({ params }: { params: { id: string } }) {
   const album = await getAlbum(Number(params.id));
   if (!album) {
-    return <NotFound>De va inget album här :/</NotFound>;
+    return <NotFound back='/admin'>De va inget album här :/</NotFound>;
   }
   return (
     <>

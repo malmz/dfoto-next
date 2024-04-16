@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { upload } from '@/lib/data/upload';
+import { upload } from '@/lib/upload';
 import { useFormStatus } from 'react-dom';
 import { Loader2 } from 'lucide-react';
 

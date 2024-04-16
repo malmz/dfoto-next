@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Album, Image as ImageType } from '@/lib/schema';
+import { Album, Image as ImageType } from '@/server/schema';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { Check, Link as LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
@@ -85,12 +85,13 @@ export function createColumns() {
       cell: (info) => <Link href={''}>{info.getValue()}</Link>,
     }),
 
-    cb.accessor('id', {
+    cb.display({
+      id: 'picture',
       header: 'Picture',
       cell: (info) => (
         <Link href={''}>
           <Image
-            src={`/api/image/${info.getValue()}`}
+            src={`/api/image/${info.row.original.id}`}
             width='150'
             height='100'
             alt=''

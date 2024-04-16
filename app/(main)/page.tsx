@@ -1,6 +1,6 @@
 import { AutoGrid } from '@/components/autogrid';
 import { Paginator } from '@/components/paginator';
-import { getPagesCount } from '@/lib/data/albums';
+import { getPagesCount } from '@/server/data';
 import { Albums } from './albums';
 
 //export const dynamic = 'force-dynamic';
